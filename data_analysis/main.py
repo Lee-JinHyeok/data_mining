@@ -28,4 +28,4 @@ print(dup)
 print(len(dup))
 print(dup2)
 print(len(dup2))
-# 여긴 테스트 커밋
+# 마지막으로 커밋 한번 더 해보기
