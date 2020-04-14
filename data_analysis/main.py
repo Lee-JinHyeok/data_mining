@@ -4,8 +4,8 @@ import collections
 collection = mongodb_connection.mongodb_set()
 
 pipeline = [
-    {'$match': {'keyword':'21대총','reference':'naver', 'save_date':{'$regex':'^2020-04-13'}}},
-    {'$group': {'_id':{'content_date':'$content_date', 'location':'$location', 'tag': '$tag','content':'$content', 'reference':'$reference','save_date':'$save_date'}}},
+    {'$match': {'keyword':'예술강사','reference':'naver', 'save_date':{'$regex':'^2020-04-13'}}},
+    {'$group': {'_id':{'content_date':'$content_date', 'location':'$location', 'tag': '$tag','content':'$content', 'reference':'$reference'}}},
     {'$limit': 1000}
 ]
 
@@ -30,4 +30,14 @@ print(type(dup))
 print(dup2)
 print(len(dup2))
 print(type(dup2))
-print(collections.Counter(dup2))
+print(collections.Counter(dup2).most_common(10))
+
+result = []
+for result_data in collections.Counter(dup2).most_common(10):
+    result.append(list(result_data))
+
+print(result)
+print(result[0])
+print(result[1])
+print(result[2])
+print(type(result[0]))

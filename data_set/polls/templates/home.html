@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>그래프를 띄어보자!!</title>
+	<style>
+		@import url('http://fonts.googleapis.com/earlyaccess/notosanskr.css');
+
+		*{margin:0px; padding:0px; font-size:16px; font-family:'Noto Sans KR', sans-serif;}
+		html, body{width:100%; height:100%;}
+		table{border-collapse:collapse; border-spacing:0;}
+		li{list-style:none;}
+		a {color:#555;  text-decoration:none !important; }
+		a:hover { text-decoration:none; }
+		button{margin:0; padding:0; border:0; font:inherit; color:inherit; background:transparent; overflow:visible; cursor:pointer; line-height:1;}
+		input, select{color:inherit; font-family: 'dotum', sans-serif; box-sizing:border-box; border:1px solid #ceced0;}
+		select{padding:4px 8px;}
+		input[type="text"], input[type="password"] {padding: 5px 9px;}
+		input[type="checkbox"], input[type="radio"], label{ cursor:pointer; }
+		input[type="radio"] {margin: 0; vertical-align: middle; position: relative; bottom: 1px; width: 17px; height: 17px; border: 0 !important;}
+		input[type="checkbox"] {border: 1px solid #c2c2c2; background: #ffffff; margin: 0; vertical-align: middle; position: relative; bottom: 1px; border: 0 !important;}
+		*, *:after, *:before {-webkit-box-sizing: border-box; box-sizing: border-box;}
+
+		#wrap{position:relative; width:100%; min-width:1920px; height:100%; min-height:960px;}
+		#wrap #nav{position:fixed; top:0; left:0; width:200px; height:100%; padding:40px 0 40px 20px; background:#4a57a6;}
+		#wrap #container{width:100%; height:100%; padding-left:200px;}
+		#container .section{float:left; width:50%; height:100%; padding:0 40px;}
+		#container .section .cont{height:50%; min-height:480px; padding:40px 0;}
+        #nav > ul > li{position:relative; width:100%;}
+		#nav > ul > li > a{display:block; padding:18px 30px 18px 35px; color:#fff; font-weight:700;}
+		#nav > ul > li.active > a{background:#fff; color:#4a57a6;}
+		#nav > ul > li.active > a:before{content:''; display:block; position:absolute; left:0; top:0; width:12px; height:100%; background:#fdd460;}
+		.line{height:100vh; border-left:1px solid #ccc;}
+		.search-form{margin-bottom:30px; padding:20px; border:1px solid #dbdbdb; background-color:#f5f5f5; text-align:center;}
+		.search-form .inp{width:360px; height:35px; border-radius:5px;vertical-align:middle;}
+		.btn-group{margin-bottom:15px;}
+		.btn{width:55px; height:35px; margin:0; color:#fff; background-color:#337ab7; border-color:#2e6da4; border-radius:5px; text-align:center; vertical-align:middle;}
+		.btn:focus{color:#fff; background-color: #286090; border-color: #122b40;}
+		.btn:hover{color:#fff; background-color: #286090; border-color: #204d74;}
+		.btn:active{color:#fff; background-color: #286090; background-image: none; border-color: #204d74;}
+		.btn2{padding:8px 15px; color:#fff; background-color:#5bc0de; border-color:#46b8da; border-radius:5px; text-align:center; }
+		.btn2:focus{color: #fff; background-color: #31b0d5; border-color: #1b6d85;}
+		.btn2:hover {color: #fff; background-color: #31b0d5; border-color: #269abc;}
+		.btn2:active{color: #fff; background-color: #31b0d5; background-image: none; border-color: #269abc;}
+		.table{width:100%; border: 1px solid #dee2e6; color:#676a6c; font-weight:400;}
+		.table th, .table td {padding:8px 10px; vertical-align: top; border:1px solid #dee2e6; font-size:15px;}
+		.table thead th {background-color:#F5F5F6; border-bottom: 2px solid #dee2e6 !important; font-weight:500;}
+		/*.table tbody tr:nth-of-type(even){background-color: rgba(0, 0, 0, 0.05);}*/
+		.table tbody tr:hover{background-color: rgba(0, 0, 0, 0.05);}
+		.hidden{display:none !important;}
+		.tab-content{margin:40px 0;}
+		.highcharts-legend{display: none;}
+	</style>
+
+		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+		<!--<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script src="https://code.highcharts.com/modules/export-data.js"></script>
+		<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+</head>
+<body>
+	<div id="wrap">
+		<div id="nav">
+			<ul>
+				<li><a href="http://localhost:8080/snsCrwal">지도</a></li>
+				<li class="active"><a href="http://localhost:8000/sns/wordCloud">검색</a></li>
+			</ul>
+		</div><!--// nav -->
+		<div id="container">
+			<div class="section">
+				<div class="tab-content" style="display:block;">
+					<div class="search-form">
+						<div class="btn-group">
+							<button type="button" class="btn2" onclick="javascript:searchText(this.value)" value="예술강사">예술강사</button>
+							<button type="button" class="btn2" onclick="javascript:searchText(this.value)" value="한국문화예술교육진흥원">한국문화예술교육진흥원</button>
+							<button type="button" class="btn2" onclick="javascript:searchText(this.value)" value="서울문화재단">서울문화재단</button>
+						</div>
+						<form method="GET" action="wordCloud" id="keyWordForm" style="display: none;">{% csrf_token %}
+						<!--<form method="POST" action="contact" id="keyForm">{% csrf_token %}-->
+							<input type="hidden" id="searchKeyWord" name="searchKeyWord" value="">
+							<input type="submit" value="Submit" />
+						</form>
+					</div>
+					<div id="wcChart" style="border:1px solid black; width:780px; height:720px;">여기</div>
+				</div>
+			</div>
+			<div class="section line">
+				<div id="resultTable"></div>
+				<div class="cont">
+						<div id="bs_chart" style="border:1px solid black" ></div>
+                    <div id="chart_div"></div>
+				</div>
+			</div>
+		</div><!--// container -->
+	</div><!--// wrap -->
+</body>
+
+<!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      var abc = {{result|safe}};
+      console.log(abc);
+
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows(abc);
+
+        // Set chart options
+        var options = {'title':'How Much Pizza I Ate Last Night',
+                       'width':800,
+                       'height':600};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+
+    </script>
+</html>
