@@ -1,9 +1,10 @@
 from data_analysis import mongodb_connection
 from konlpy.tag import Okt
+import collections
 collection = mongodb_connection.mongodb_set()
 
 pipeline = [
-    {'$match': {'keyword':'예술강사','reference':'naver', 'save_date':{'$regex':'^2020-04-14'}}},
+    {'$match': {'keyword':'21대총','reference':'naver', 'save_date':{'$regex':'^2020-04-13'}}},
     {'$group': {'_id':{'content_date':'$content_date', 'location':'$location', 'tag': '$tag','content':'$content', 'reference':'$reference','save_date':'$save_date'}}},
     {'$limit': 1000}
 ]
@@ -15,8 +16,6 @@ dup2 = []
 # 11 sec
 for data2 in data:
     dup += (list(okt.nouns(data2.get('_id').get('content'))))
-    print(data2.get('_id').get('save_date'))
-    print(data2.get('_id').get('reference'))
 
 #0.02 sec
 for data3 in dup:
@@ -26,6 +25,9 @@ for data3 in dup:
 print(len(data))
 print(dup)
 print(len(dup))
+print(type(dup))
+
 print(dup2)
 print(len(dup2))
-# 마지막으로 커밋 한번 더 해보기
+print(type(dup2))
+print(collections.Counter(dup2))
