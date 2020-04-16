@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
 <title>그래프를 띄어보자!!</title>
 	<style>
+
 		@import url('http://fonts.googleapis.com/earlyaccess/notosanskr.css');
 
 		*{margin:0px; padding:0px; font-size:16px; font-family:'Noto Sans KR', sans-serif;}
@@ -52,7 +54,6 @@
 		.tab-content{margin:40px 0;}
 		.highcharts-legend{display: none;}
 	</style>
-
 		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 		<!--<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
 		<script src="https://code.highcharts.com/highcharts.js"></script>
@@ -60,7 +61,9 @@
 		<script src="https://code.highcharts.com/modules/exporting.js"></script>
 		<script src="https://code.highcharts.com/modules/export-data.js"></script>
 		<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
+		    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body>
 	<div id="wrap">
@@ -85,54 +88,78 @@
 							<input type="submit" value="Submit" />
 						</form>
 					</div>
-					<div id="wcChart" style="border:1px solid black; width:780px; height:720px;">여기</div>
+					<div id="map" style="border:1px solid black; width:780px; height:720px;"></div>
 				</div>
 			</div>
 			<div class="section line">
 				<div id="resultTable"></div>
 				<div class="cont">
-						<div id="bs_chart" style="border:1px solid black" ></div>
-                    <div id="chart_div"></div>
+					<div style="border:1px solid black" ></div>
+                    	<div id="chart_div"></div>
+					<div style="border:1px solid black" ></div>
+					<div id="piechart_3d"></div>
 				</div>
 			</div>
 		</div><!--// container -->
 	</div><!--// wrap -->
 </body>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  var result_data = {{result|safe}};
+  console.log(result_data);
+  console.log(result_data['content']);
+  console.log(result_data['tag']);
 
-<!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+  // Load the Visualization API and the corechart package.
+  google.charts.load('current', {'packages':['corechart']});
 
-      var abc = {{result|safe}};
-      console.log(abc);
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+	// Create the data table.
+	var data = new google.visualization.DataTable();
+	data.addColumn('string', 'Topping');
+	data.addColumn('number', 'Slices');
+	data.addRows(result_data['content']);
+
+	// Set chart options
+	var options = {'title':'예술강사 사용 단어 빈도수',
+				   'width':700,
+				   'height':500};
+
+	// Instantiate and draw our chart, passing in some options.
+	var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+	chart.draw(data, options);
+  }
 
 
-      // Load the Visualization API and the corechart package.
-      google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart2);
+  function drawChart2() {
+	var data2 = google.visualization.arrayToDataTable([
 
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.charts.setOnLoadCallback(drawChart);
+	]);
+	data2.addColumn('string', 'Topping');
+	data2.addColumn('number', 'Slices');
+	data2.addRows(result_data['tag']);
+	var options2 = {
+	  title: '예술강사 태그 사용수',
+	  is3D: true,
+	  'width':700,
+	  'height':500
+	};
 
-      // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
-
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topping');
-        data.addColumn('number', 'Slices');
-        data.addRows(abc);
-
-        // Set chart options
-        var options = {'title':'How Much Pizza I Ate Last Night',
-                       'width':800,
-                       'height':600};
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-
-    </script>
+	var chart2 = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+	chart2.draw(data2, options2);
+  }
+</script>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGVlamluaHllb2siLCJhIjoiY2s3dmV2dDBrMDFudTNlcXF1M3F0ZjlncCJ9.6EDP3fyWNiYl7iT0R67LGA'; // replace this with your access token
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/leejinhyeok/ck8txclhg0tqk1jmpv1iutvbt', // replace this with your style URL
+      center: [129.033783, 35.098748],
+      zoom: 14
+    });
+</script>
 </html>
