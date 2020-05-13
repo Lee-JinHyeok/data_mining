@@ -106,34 +106,32 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
   var result_data = {{result|safe}};
-  console.log(result_data);
-  console.log(result_data['content']);
-  console.log(result_data['tag']);
+<!--  console.log(result_data);-->
+<!--  console.log(result_data['content']);-->
+<!--  console.log(result_data['tag']);-->
 
-  // Load the Visualization API and the corechart package.
+  // Visualization API 및 핵심 차트 패키지를 로드하십시오.
   google.charts.load('current', {'packages':['corechart']});
 
-  // Set a callback to run when the Google Visualization API is loaded.
+  // Google Visualization API가로드 될 때 실행되도록 콜백을 설정하십시오.
   google.charts.setOnLoadCallback(drawChart);
 
   function drawChart() {
-	// Create the data table.
+	// 데이터 테이블을 작성하십시오.
 	var data = new google.visualization.DataTable();
 	data.addColumn('string', 'Topping');
 	data.addColumn('number', 'Slices');
 	data.addRows(result_data['content']);
 
-	// Set chart options
+	// 차트 옵션 설정
 	var options = {'title':'예술강사 사용 단어 빈도수',
 				   'width':700,
 				   'height':500};
 
-	// Instantiate and draw our chart, passing in some options.
+	// 몇 가지 옵션을 전달하여 차트를 인스턴스화하고 그립니다.
 	var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
 	chart.draw(data, options);
   }
-
-
 google.charts.setOnLoadCallback(drawChart2);
   function drawChart2() {
 	var data2 = google.visualization.arrayToDataTable([

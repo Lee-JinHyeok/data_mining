@@ -51,7 +51,6 @@ def content_data():
     # 가져올 데이터 data에 저장
     data = list(collection.aggregate(pipeline, allowDiskUse=True))
 
-    # 11 sec
     dup_content = []
     # db에서 가져온 데이터 중 content만 단어 빈도수 정렬
     # 단어 빈도수 찾아주는 API
@@ -59,18 +58,11 @@ def content_data():
     for sample_data in data:
         dup_content += (list(okt.nouns(sample_data.get('_id').get('content'))))
 
-    # 0.02 sec
     dup2_content = []
     # 정렬한 단어중 1글자면 빼고 저장
     for sample_data in dup_content:
         if len(sample_data) >= 2:
             dup2_content.append(sample_data)
-
-    # 데이터 결과 확인
-    # print('가져온 데이터 개수', len(data))
-    # print('dup_content의 길이', len(dup_content),'타입', type(dup_content),'값',dup_content)
-    # print('dup2_content 길이', len(dup2_content),'타입', type(dup2_content),'값',dup2_content)
-    # print(collections.Counter(dup2_content).most_common(10))
 
     # 단어 빈도수 많은 순으로 10개 가져와 result에 리스트 타입으로 저장
     result = []
